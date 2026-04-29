@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тест</title>
+</head>
+<body>
+    <h2>Проверка работы FastAPI + Model</h2>
+    <label>Маршрут:
+        <select id="route"><option>Загрузка...</option></select>
+    </label>
+
+    <h3>Ответ сервера (JSON):</h3>
+    <pre id="output" style="background:#f4f4f4; padding:10px; border:1px solid #ccc; min-height:50px;">
+        Выберите маршрут для теста...
+    </pre>
+
+    <script>
+        const select = document.getElementById('route');
+        const output = document.getElementById('output');
+
+        // 1️⃣ Загрузка списка маршрутов при открытии страницы
+        fetch('/api/routes')
+            .then(res => res.json())
+            .then(data => {
+                select.innerHTML = '<option value="">-- Выберите --</option>';
+                data.routes.forEach(r => {
+                    const opt = document.createElement('option');
+                    opt.value = r;
+                    opt.textContent = r;
+                    select.appendChild(opt);
+                });
+            })
+            .catch(err => output.textContent = '❌ Ошибка загрузки маршрутов: ' + err);
+
+        // 2️⃣ Запрос предсказания при выборе
+        select.addEventListener('change', () => {
+            const route = select.value;
+            if (!route) return;
+
+            output.textContent = '⏳ Загрузка данных...';
+            fetch(`/api/chart-data?route=${encodeURIComponent(route)}`)
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    return res.json();
+                })
+                .then(data => {
+                    // Просто выводим JSON, чтобы убедиться, что модель и БД работают
+                    output.textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(err => output.textContent = '❌ Ошибка запроса: ' + err);
+        });
+    </script>
+</body>
+</html>
