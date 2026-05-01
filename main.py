@@ -33,5 +33,11 @@ async def get_route_details(route: str = Query(...)):
 async def get_chart_data(route: str = Query(...)):
     return service.predict(route)
 
+@app.get("/result", response_class=HTMLResponse)
+async def result_page(request: Request, route: str = Query(None)):
+    return templates.TemplateResponse(request, "result.html", {
+        "request": request,
+        "initial_route": route 
+    })
 
 
