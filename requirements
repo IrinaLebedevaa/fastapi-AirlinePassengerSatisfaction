@@ -1,0 +1,10 @@
+fastapi
+sqlalchemy
+uvicorn
+pandas
+psycopg2-binary
+jinja2
+catboost
+joblib
+
+# pip install -r requirements.txt
