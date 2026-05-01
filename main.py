@@ -25,6 +25,10 @@ async def home(request: Request):
 async def get_routes():
     return {"routes": service.get_routes()}
 
+@app.get("/api/route-details")
+async def get_route_details(route: str = Query(...)):
+    return service.get_route_details(route)
+
 @app.get("/api/chart-data")
 async def get_chart_data(route: str = Query(...)):
     return service.predict(route)

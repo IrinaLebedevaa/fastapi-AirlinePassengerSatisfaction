@@ -2,7 +2,7 @@ import os
 import joblib
 import pandas as pd
 from sqlalchemy import create_engine
-from typing import Dict, List
+from typing import Dict, List, Optional
 from catboost import CatBoostClassifier
 from sqlalchemy import text
 
@@ -35,10 +35,37 @@ def _fetch_raw(route: str) -> pd.DataFrame:
         raise ValueError(f"Нет данных для маршрута: {route}")
     return df
 
+
+def get_route_details(route: str) -> Dict[str, Optional[str]]:
+    """
+    Возвращает информацию о маршруте: название, время вылета и прилёта
+    """
+    query = text("""
+        SELECT "routename", "departuretime", "arrivaltime" 
+        FROM passenger_feedback 
+        WHERE route = :route 
+        LIMIT 1;
+    """)
+    df = pd.read_sql(query, engine, params={"route": route})
+
+    if df.empty:
+        return {
+            "route_name": None,
+            "departure_time": None,
+            "arrival_time": None
+        }
+
+    row = df.iloc[0]
+    return {
+        "route_name": row["routename"],
+        "departure_time": row["departuretime"].strftime("%H:%M") if pd.notna(row["departuretime"]) else None,
+        "arrival_time": row["arrivaltime"].strftime("%H:%M") if pd.notna(row["arrivaltime"]) else None
+    }
+
 def _preprocess(df: pd.DataFrame) -> pd.DataFrame:
     """Приводит данные к формату модели"""
     df = df.copy()
-    df.drop(columns=['id', 'Gender', 'route'], errors="ignore", inplace=True)
+    df.drop(columns=['id', 'Gender', 'route', 'routename', 'departuretime', 'arrivaltime'], errors="ignore", inplace=True)
 
     expected = getattr(model, "feature_names_in_", df.columns.tolist())
     return df[expected]

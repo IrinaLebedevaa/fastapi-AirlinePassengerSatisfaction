@@ -6,9 +6,17 @@
 </head>
 <body>
     <h2>Проверка работы FastAPI + Model</h2>
+
     <label>Маршрут:
         <select id="route"><option>Загрузка...</option></select>
     </label>
+
+    <!-- ✨ Блок с информацией о рейсе -->
+    <div id="route-info" class="route-info">
+        <p><strong>Маршрут:</strong> <span id="routename">—</span></p>
+        <p><strong>Время вылета:</strong> <span id="departuretime">—</span></p>
+        <p><strong>Время прилёта:</strong> <span id="arrivaltime">—</span></p>
+    </div>
 
     <h3>Ответ сервера (JSON):</h3>
     <pre id="output" style="background:#f4f4f4; padding:10px; border:1px solid #ccc; min-height:50px;">
@@ -18,6 +26,12 @@
     <script>
         const select = document.getElementById('route');
         const output = document.getElementById('output');
+        const routeInfo = document.getElementById('route-info');
+
+        // 🔍 Получаем элементы для заполнения
+        const routeNameEl = document.getElementById('routename');
+        const departureTimeEl = document.getElementById('departuretime');
+        const arrivalTimeEl = document.getElementById('arrivaltime');
 
         // 1️⃣ Загрузка списка маршрутов при открытии страницы
         fetch('/api/routes')
@@ -33,22 +47,52 @@
             })
             .catch(err => output.textContent = '❌ Ошибка загрузки маршрутов: ' + err);
 
-        // 2️⃣ Запрос предсказания при выборе
-        select.addEventListener('change', () => {
+        // 2️⃣ Запрос данных при выборе маршрута
+        select.addEventListener('change', async () => {
             const route = select.value;
-            if (!route) return;
+
+            // Если ничего не выбрано — скрываем блок и очищаем вывод
+            if (!route) {
+                routeInfo.classList.remove('show');
+                output.textContent = 'Выберите маршрут для теста...';
+                return;
+            }
 
             output.textContent = '⏳ Загрузка данных...';
-            fetch(`/api/chart-data?route=${encodeURIComponent(route)}`)
-                .then(res => {
-                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                    return res.json();
-                })
-                .then(data => {
-                    // Просто выводим JSON, чтобы убедиться, что модель и БД работают
-                    output.textContent = JSON.stringify(data, null, 2);
-                })
-                .catch(err => output.textContent = '❌ Ошибка запроса: ' + err);
+
+            try {
+                // 🔄 Загружаем детали маршрута и данные модели параллельно
+                const [detailsRes, chartRes] = await Promise.all([
+                    fetch(`/api/route-details?route=${encodeURIComponent(route)}`),
+                    fetch(`/api/chart-data?route=${encodeURIComponent(route)}`)
+                ]);
+
+                // 📍 Обрабатываем информацию о маршруте
+                if (detailsRes.ok) {
+                    const details = await detailsRes.json();
+
+                    // ✅ Заполняем поля (используем ваши ID: routename, departuretime, arrivaltime)
+                    routeNameEl.textContent = details.route_name || '—';
+                    departureTimeEl.textContent = details.departure_time || '—';
+                    arrivalTimeEl.textContent = details.arrival_time || '—';
+
+                    // Показываем блок
+                    routeInfo.classList.add('show');
+                }
+
+                // 📊 Обрабатываем данные модели
+                if (chartRes.ok) {
+                    const chartData = await chartRes.json();
+                    output.textContent = JSON.stringify(chartData, null, 2);
+                } else {
+                    throw new Error(`HTTP ${chartRes.status}`);
+                }
+
+            } catch (err) {
+                console.error('❌ Ошибка:', err);
+                output.textContent = '❌ Ошибка запроса: ' + err.message;
+                routeInfo.classList.remove('show');
+            }
         });
     </script>
 </body>
