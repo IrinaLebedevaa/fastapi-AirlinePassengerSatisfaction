@@ -32,7 +32,7 @@ def _fetch_raw(route: str) -> pd.DataFrame:
     query = text("SELECT * FROM passenger_feedback WHERE route = :route;")
     df = pd.read_sql(query, engine, params={"route": route})
     if df.empty:
-        raise ValueError(f"Нет данных для маршрута: {route}")
+        raise ValueError(f"There is no data for the route: {route}")
     return df
 
 
