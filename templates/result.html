@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net;">
+    <title>Flight analysis results</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="start-container">
+    <div class="results-container">
+        <div class="flight-header">
+            <h1 class="flight-title-main" id="flightTitle">Flight: <span id="flightNumber">—</span> | <span id="flightRoute">—</span></h1>
+        </div>
+        <div class="flight-info">
+            <div class="flight-times">
+                <div class="time-box">
+                    <div class="type-name-label">Departure time</div>
+                    <div class="time-value" id="departureTime">-</div>
+                </div>
+                <div class="time-box">
+                    <div class="time-label">Arrival time</div>
+                    <div class="time-value" id="arrivalTime">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="satisfaction-selection">
+            <h2>Overall passenger satisfaction</h2>
+            <div class="chart-container">
+                <canvas id="satisfactionChart"></canvas>
+            </div>
+        </div>
+
+        <div class="critical-selector">
+            <h2>Critical marks: </h2>
+            <div id="criticalItems" class="critical-items">
+                <p>Loading...</p>
+            </div>
+        </div>
+
+        <div id="loader" style="display: none;" class="loader"></div>
+        <div id="errorMessage" style="display: none; color: #2d045a; text-align: center; margin-top: 20px;"></div>
+    </div>
+</div>
+
+<div class="blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+    <div class="blob blob-5"></div>
+    <div class="blob blob-6"></div>
+</div>
+
+<script>
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const flightId = urlParams.get('flight_id');
+    let satisfactionChart = null;
+
+    function showLoading(show) {
+        const loader = document.getElementById('loader');
+        if (loader) loader.style.display = show ? 'block' : 'none';
+    }
+
+    function showError(message) {
+        const errorDiv = document.getElementById('errorMessage');
+        if (errorDiv) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+    }
+
+    async function loadFlightData() {
+        if (!flightId) {
+            document.getElementById('flightTitle').innerHTML = 'Flight not specified';
+            showError('Flight not selected');
+            return;
+        }
+
+        showLoading(true);
+
+        try {
+            const response = await fetch(`/api/flight/${flightId}`);
+            if (!response.ok) throw new Error('Flight not found');
+            const data = await response.json();
+
+            // Заполняем данные
+            document.getElementById('flightNumber').textContent = data.flight_number;
+            document.getElementById('flightRoute').textContent = `${data.origin} → ${data.destination}`;
+            document.getElementById('departureTime').textContent = data.departure_time;
+            document.getElementById('arrivalTime').textContent = data.arrival_time;
+
+            // Создаем диаграмму
+            const ctx = document.getElementById('satisfactionChart').getContext('2d');
+            if (satisfactionChart) satisfactionChart.destroy();
+
+            satisfactionChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Satisfied', 'Dissatisfied'],
+                    datasets: [{
+                        data: [data.satisfaction_data.satisfied, data.satisfaction_data.unsatisfied],
+                        backgroundColor: ['#0e8314', '#a3201a']
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            });
+
+            // Критические отметки
+            const container = document.getElementById('criticalItems');
+            if (data.critical_marks.minimum && data.critical_marks.minimum.length > 0) {
+                container.innerHTML = data.critical_marks.minimum.map(item =>
+                    `<div class="critical-item"><strong>${item.name}</strong>: GPA ${item.value}</div>`
+                ).join('');
+            } else {
+                container.innerHTML = '<p> All indicators are normal</p>';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('criticalItems').innerHTML = `<p>Error: ${error.message}</p>`;
+            showError('Failed to load flight data');
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    loadFlightData();
+</script>
+</body>
+</html>

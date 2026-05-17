@@ -1,3 +1,4 @@
+# noinspection SpellCheckingInspection
 import os, logging, pandas as pd
 from sqlalchemy import create_engine, text
 from typing import Dict, List, Optional
@@ -105,7 +106,7 @@ def get_all_flights() -> List[Dict]:
                 "destination": destination
             })
         return result
-    except Exception as e:
+    except Exception as _:
         logger.exception("Error in get_all_flights")
         return []
 
@@ -141,6 +142,6 @@ def get_flight_analysis(flight_id: str) -> Optional[Dict]:
                 "minimum": [{"name": k, "value": v} for k, v in analysis["low_metrics"].items()]
             }
         }
-    except Exception as e:
+    except Exception as _:
         logger.exception(f"Error in get_flight_analysis for {flight_id}")
         return None

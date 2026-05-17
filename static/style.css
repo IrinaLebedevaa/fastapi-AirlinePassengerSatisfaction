@@ -1,0 +1,349 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ОСНОВНОЙ ФОН СТРАНИЦЫ */
+body{
+    background: linear-gradient(135deg, #294fd9 0%, #71a8d9 100%);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Контейнер для центрирования карточки на главной странице */
+.start-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+/* форма с результатами */
+.results-container{
+    background: rgb(105 162 216);
+    box-shadow: 0 10px 30px rgb(0 0 0 / 20%);
+    width: 100%;
+    max-width: 700px;
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid rgb(255 255 255 / 30%);
+}
+
+/* Остальные стили оставляем как есть */
+.glass-card {
+    background: rgb(255 255 255 /20%);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgb(255 255 255 /30%);
+}
+
+/* карточка, в которой находится форма выбора рейса. */
+.form-card{
+    color: #6d5ae6;
+    margin: 0 auto;
+    background: rgb(255 255 255 / 2%);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    width: 700px;
+}
+
+/* кнопка flight analysis */
+.form-card h1{
+    color: #0e0067;
+    margin-bottom: 70px;
+    font-size: 50px;
+    text-align: center;
+}
+
+/* кнопка airline passenger satisfaction analysis system */
+.form-card p {
+    color: #192973;
+    margin-bottom: 70px;
+    text-align: center;
+    font-family: "Arial Narrow", sans-serif;
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-size: 25px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+/* кнопка select a flight to analyze */
+.input-group label{
+    display: block;
+    margin-bottom: 15px;
+    color: #1f1e5a;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+/* Выпадающий список с рейсами. */
+select{
+    background-color: rgb(201 226 255 / 98%);
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #2413bd;
+    border-radius: 8px;
+    font-size: 17px;
+    margin-bottom: 20px;
+}
+
+/* клик на список */
+select:focus{
+    outline: none;
+    border-color: #140a67;
+    font-size: 20px;
+}
+
+/* кнопка find out the result */
+.btn-submit{
+    margin-bottom: 100px;
+    background-color: rgb(70 150 223 / 80%);
+    color: #00005c;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* клик на кнопку с резами */
+.btn-submit:hover{
+    background-color: rgb(20 10 103 / 100%);
+    color: #71a9d9;
+    transform: scale(1.02);
+}
+
+/* адаптивность к смартфонам */
+@media (width <= 600px){
+    .form-card, .results-container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .start-container {
+        padding: 20px;
+    }
+}
+
+/* Контейнер для всех облачков */
+.blobs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Общий стиль для всех облачков */
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.6;
+}
+
+.blob-1 {
+    animation: float1 10s infinite ease-in-out;
+    width: 350px;
+    height: 350px;
+    background: rgb(244 241 237 / 85%);
+    top: -100px;
+    left: -100px;
+    filter: blur(30px);
+}
+
+.blob-2 {
+    animation: float2 2s infinite ease-in-out;
+    width: 450px;
+    height: 450px;
+    background: rgb(165 8 36 / 50%);
+    bottom: -150px;
+    right: -150px;
+    filter: blur(80px);
+}
+
+.blob-3 {
+    animation: float3 10s infinite ease-in-out;
+    width: 300px;
+    height: 300px;
+    background: rgb(244 214 214 / 60%);
+    top: 10%;
+    right: -80px;
+    filter: blur(30px);
+}
+
+.blob-4 {
+    animation: float3 10s infinite ease-in-out;
+    width: 280px;
+    height: 280px;
+    background: rgb(246 246 246 / 100%);
+    bottom: -10%;
+    left: -70px;
+    filter: blur(50px);
+}
+
+.blob-5 {
+    animation: float2 10s infinite linear;
+    width: 400px;
+    height: 400px;
+    background: rgb(234 229 234 / 70%);
+    top: 75%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    filter: blur(30px);
+}
+
+.blob-6 {
+    animation: float2 10s infinite ease-in-out;
+    width: 450px;
+    height: 450px;
+    background: rgb(236 248 233);
+    bottom: 200px;
+    left: 100px;
+    filter: blur(20px);
+}
+
+/* блок, где показано время вылета и прилета. */
+.flight-info{
+    background: rgb(105 162 216 / 35%);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+/* Располагает время вылета и прилета рядом */
+.flight-times{
+    display: flex;
+    gap: 15px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* блок с одним временем */
+.time-box{
+    flex: 1;
+    text-align: center;
+    padding: 15px;
+    background: #c7d6e4;
+    border-radius: 10px;
+    color: #1a1668;
+}
+
+/*  область где расположена диагр и критикал маркс */
+.satisfaction-selection, .critical-selector{
+    margin: 30px 0;
+    padding: 20px;
+    background: #c7d6e4;
+    border-radius: 10px;
+}
+
+/* заголовок к диаграмме удовлетворенности */
+.satisfaction-selection h2, .critical-selector h2{
+    color: #303b71;
+    margin-bottom: 10px;
+    font-family: "Arial Narrow", sans-serif;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* Белая карточка для одной критической отметки. */
+.critical-card{
+    background: #190d82;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+/* Обертка для круговой диаграммы */
+.chart-container{
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Большая строка с рейсом */
+.flight-title-main {
+    font-size: 28px;
+    text-align: center;
+    color: #fdfcfc;
+    margin: 0;
+}
+/* белый цвет для нее */
+.flight-title-main span {
+    color: #fff;
+}
+
+/* Большой баннер "Рейс: SU1234 | Москва → Сочи" */
+.flight-header {
+    background: linear-gradient(135deg, rgb(33 46 186 / 20%) 0%, #162f8c 100%);
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* располагает все карточки критических отметок вертикально */
+.critical-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Создает красивую карточку для каждого критического показателя */
+.critical-item {
+    background: linear-gradient(135deg, #5f87aa 0%, #5d74c6 100%);
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #3d3b77;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+}
+
+/* Белый цвет для названия показателя */
+.critical-item strong {
+    color: #fff;
+}
+
+/* Значение оценки */
+.critical-item span {
+    color: #b1a5a4;
+    font-weight: bold;
+}
+
+@keyframes float1 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(60px, 40px); }
+}
+
+@keyframes float2 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-60px, -40px); }
+}
+
+@keyframes float3 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(60px, -40px); }
+}
