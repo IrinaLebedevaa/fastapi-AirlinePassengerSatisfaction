@@ -1,10 +1,11 @@
+/* Сброс стандартных отступов и границ у всех элементов */
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* ОСНОВНОЙ ФОН СТРАНИЦЫ */
+/* Основной фон страницы */
 body{
     background: linear-gradient(135deg, #294fd9 0%, #71a8d9 100%);
     font-family: Arial, sans-serif;
@@ -15,14 +16,14 @@ body{
     overflow-x: hidden;
 }
 
-/* Контейнер для центрирования карточки на главной странице */
+/* Контейнер для центрирования */
 .start-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     width: 100%;
-    padding: 40px;
+    padding: 40px;  /* Отступы со всех сторон */
     box-sizing: border-box;
 }
 
@@ -38,7 +39,7 @@ body{
     border: 1px solid rgb(255 255 255 / 30%);
 }
 
-/* Остальные стили оставляем как есть */
+/* Стеклянная карточка */
 .glass-card {
     background: rgb(255 255 255 /20%);
     backdrop-filter: blur(10px);
@@ -46,7 +47,7 @@ body{
     border: 1px solid rgb(255 255 255 /30%);
 }
 
-/* карточка, в которой находится форма выбора рейса. */
+/* Карточка формы выбора рейса (главная страница) */
 .form-card{
     color: #6d5ae6;
     margin: 0 auto;
@@ -57,7 +58,7 @@ body{
     width: 700px;
 }
 
-/* кнопка flight analysis */
+/* Заголовок "Flight analysis" */
 .form-card h1{
     color: #0e0067;
     margin-bottom: 70px;
@@ -65,7 +66,7 @@ body{
     text-align: center;
 }
 
-/* кнопка airline passenger satisfaction analysis system */
+/* Подзаголовок "Airline passenger satisfaction analysis system" */
 .form-card p {
     color: #192973;
     margin-bottom: 70px;
@@ -76,11 +77,12 @@ body{
     font-size: 25px;
 }
 
+/* Группа "label + select" */
 .input-group {
     margin-bottom: 20px;
 }
 
-/* кнопка select a flight to analyze */
+/* Подпись "Select a flight to analyze" */
 .input-group label{
     display: block;
     margin-bottom: 15px;
@@ -89,7 +91,7 @@ body{
     font-size: 20px;
 }
 
-/* Выпадающий список с рейсами. */
+/* Выпадающий список с рейсами */
 select{
     background-color: rgb(201 226 255 / 98%);
     width: 100%;
@@ -100,14 +102,14 @@ select{
     margin-bottom: 20px;
 }
 
-/* клик на список */
+/* Стиль выпадающего списка при фокусе (когда кликнули) */
 select:focus{
     outline: none;
     border-color: #140a67;
     font-size: 20px;
 }
 
-/* кнопка find out the result */
+/* Кнопка отправки формы "Find out the result" */
 .btn-submit{
     margin-bottom: 100px;
     background-color: rgb(70 150 223 / 80%);
@@ -120,14 +122,14 @@ select:focus{
     width: 100%;
 }
 
-/* клик на кнопку с резами */
+/* Эффект при наведении на кнопку */
 .btn-submit:hover{
     background-color: rgb(20 10 103 / 100%);
     color: #71a9d9;
     transform: scale(1.02);
 }
 
-/* адаптивность к смартфонам */
+/* Адаптивность для мобильных устройств */
 @media (width <= 600px){
     .form-card, .results-container {
         width: 90%;
@@ -151,7 +153,7 @@ select:focus{
     pointer-events: none;
 }
 
-/* Общий стиль для всех облачков */
+/* Базовый стиль для каждого облачка */
 .blob {
     position: absolute;
     border-radius: 50%;
@@ -220,7 +222,7 @@ select:focus{
     filter: blur(20px);
 }
 
-/* блок, где показано время вылета и прилета. */
+/* Блок с информацией о времени вылета/прилёта */
 .flight-info{
     background: rgb(105 162 216 / 35%);
     padding: 20px;
@@ -228,7 +230,7 @@ select:focus{
     margin: 20px 0;
 }
 
-/* Располагает время вылета и прилета рядом */
+/* Контейнер для двух блоков времени рядом */
 .flight-times{
     display: flex;
     gap: 15px;
@@ -237,17 +239,16 @@ select:focus{
     letter-spacing: 1px;
 }
 
-/* блок с одним временем */
+/* Отдельный блок с одним временем */
 .time-box{
     flex: 1;
     text-align: center;
     padding: 15px;
     background: #c7d6e4;
     border-radius: 10px;
-    color: #1a1668;
 }
 
-/*  область где расположена диагр и критикал маркс */
+/* Блоки диаграммы и критических отметок */
 .satisfaction-selection, .critical-selector{
     margin: 30px 0;
     padding: 20px;
@@ -255,7 +256,7 @@ select:focus{
     border-radius: 10px;
 }
 
-/* заголовок к диаграмме удовлетворенности */
+/* Заголовки блоков */
 .satisfaction-selection h2, .critical-selector h2{
     color: #303b71;
     margin-bottom: 10px;
@@ -264,7 +265,36 @@ select:focus{
     letter-spacing: 2px;
 }
 
-/* Белая карточка для одной критической отметки. */
+/* Контейнер для круговой диаграммы */
+.chart-container{
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Основной заголовок с номером рейса */
+.flight-title-main {
+    font-size: 28px;
+    text-align: center;
+    color: #fdfcfc;
+    margin: 0;
+}
+
+/* Белый цвет для span внутри заголовка */
+.flight-title-main span {
+    color: #fff;
+}
+
+/* Баннер с информацией о рейсе */
+.flight-header {
+    background: linear-gradient(135deg, rgb(33 46 186 / 20%) 0%, #162f8c 100%);
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Карточка для критической отметки */
 .critical-card{
     background: #190d82;
     padding: 15px;
@@ -275,42 +305,14 @@ select:focus{
     margin-bottom: 10px;
 }
 
-/* Обертка для круговой диаграммы */
-.chart-container{
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-/* Большая строка с рейсом */
-.flight-title-main {
-    font-size: 28px;
-    text-align: center;
-    color: #fdfcfc;
-    margin: 0;
-}
-/* белый цвет для нее */
-.flight-title-main span {
-    color: #fff;
-}
-
-/* Большой баннер "Рейс: SU1234 | Москва → Сочи" */
-.flight-header {
-    background: linear-gradient(135deg, rgb(33 46 186 / 20%) 0%, #162f8c 100%);
-    padding: 25px;
-    border-radius: 15px;
-    margin-bottom: 30px;
-    text-align: center;
-}
-
-/* располагает все карточки критических отметок вертикально */
+/* Контейнер для списка критических отметок */
 .critical-items {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-/* Создает красивую карточку для каждого критического показателя */
+/* Карточка критической отметки */
 .critical-item {
     background: linear-gradient(135deg, #5f87aa 0%, #5d74c6 100%);
     padding: 15px;
@@ -322,7 +324,7 @@ select:focus{
     color: #fff;
 }
 
-/* Белый цвет для названия показателя */
+/* Название показателя */
 .critical-item strong {
     color: #fff;
 }
@@ -333,6 +335,7 @@ select:focus{
     font-weight: bold;
 }
 
+/* Анимации для облачков */
 @keyframes float1 {
     0%, 100% { transform: translate(0, 0); }
     50% { transform: translate(60px, 40px); }

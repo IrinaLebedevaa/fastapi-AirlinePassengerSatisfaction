@@ -35,7 +35,7 @@
         </div>
 
         <div class="critical-selector">
-            <h2>Critical marks: </h2>
+            <h2>Critical marks</h2>
             <div id="criticalItems" class="critical-items">
                 <p>Loading...</p>
             </div>
@@ -66,6 +66,12 @@
         if (loader) loader.style.display = show ? 'block' : 'none';
     }
 
+    /**
+     * Отображает сообщение об ошибке в специальном блоке
+     * Сообщение автоматически исчезает через 5 секунд
+     * @param {string} message - текст сообщения об ошибке
+     */
+
     function showError(message) {
         const errorDiv = document.getElementById('errorMessage');
         if (errorDiv) {
@@ -77,6 +83,10 @@
         }
     }
 
+    /**
+     * Асинхронно загружает данные о рейсе с сервера и отображает их на странице
+     */
+
     async function loadFlightData() {
         if (!flightId) {
             document.getElementById('flightTitle').innerHTML = 'Flight not specified';
@@ -87,8 +97,11 @@
         showLoading(true);
 
         try {
+            // Запрос к серверу: GET /api/flight/{flight_id}
             const response = await fetch(`/api/flight/${flightId}`);
+            // Проверка статуса ответа
             if (!response.ok) throw new Error('Flight not found');
+            // Преобразуем ответ в JSON
             const data = await response.json();
 
             // Заполняем данные
@@ -99,8 +112,10 @@
 
             // Создаем диаграмму
             const ctx = document.getElementById('satisfactionChart').getContext('2d');
+            // Уничтожаем старую диаграмму, если она существует
             if (satisfactionChart) satisfactionChart.destroy();
 
+            // Создаём новую кольцевую диаграмму
             satisfactionChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -117,7 +132,7 @@
             const container = document.getElementById('criticalItems');
             if (data.critical_marks.minimum && data.critical_marks.minimum.length > 0) {
                 container.innerHTML = data.critical_marks.minimum.map(item =>
-                    `<div class="critical-item"><strong>${item.name}</strong>: GPA ${item.value}</div>`
+                    `<div class="critical-item"><strong>${item.name}</strong>: ${item.value} / 5</div>`
                 ).join('');
             } else {
                 container.innerHTML = '<p> All indicators are normal</p>';
