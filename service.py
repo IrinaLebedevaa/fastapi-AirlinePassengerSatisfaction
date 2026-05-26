@@ -134,7 +134,6 @@ def get_flight_analysis(flight_id: str) -> Optional[Dict]:
             "arrival_time": _format_time(first.get('arrivaltime')),
             "satisfaction_data": {
                 "satisfied": analysis["satisfied"],
-                "neutral": 0,
                 "unsatisfied": analysis["dissatisfied"]
             },
             "critical_marks": {
