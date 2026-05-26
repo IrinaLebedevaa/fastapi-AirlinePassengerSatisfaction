@@ -30,7 +30,7 @@ async def home(request: Request):
 async def get_flights():
     try:
         return await run_in_threadpool(service.get_all_flights)
-    except Exception as e:
+    except Exception as _:
         logger.exception("Error loading flights")
         return []
 
@@ -44,7 +44,7 @@ async def get_flight_analysis(flight_id: str):
         return result
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as _:
         logger.exception(f"Error analyzing flight {flight_id}")
         raise HTTPException(status_code=500, detail="Internal server error")
 

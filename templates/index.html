@@ -2,98 +2,57 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Тест</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passenger satisfaction analysis</title>
+    <link rel="stylesheet" href="/static/style.css">
+
 </head>
-<body>
-    <h2>Проверка работы FastAPI + Model</h2>
+<body style="margin: 0; padding: 0; background: linear-gradient(135deg, #645cec 0%, #0c5f95 100%); font-family: Arial, sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center;">
+<div class="start-container">
+    <div class="form-card">
+        <h1>Flight analysis</h1>
+        <p>Airline passenger satisfaction analysis system</p>
 
-    <label>Маршрут:
-        <select id="route"><option>Загрузка...</option></select>
-    </label>
+        <form action="/result" method="GET">
+            <div class="input-group">
+                <label for="flightSelect">Select a flight to analyze:</label>
+                <select id="flightSelect" name="flight_id" required>
+                    <option value="">Loading flights...</option>
+                </select>
+            </div>
 
-    <!-- ✨ Блок с информацией о рейсе -->
-    <div id="route-info" class="route-info">
-        <p><strong>Маршрут:</strong> <span id="routename">—</span></p>
-        <p><strong>Время вылета:</strong> <span id="departuretime">—</span></p>
-        <p><strong>Время прилёта:</strong> <span id="arrivaltime">—</span></p>
+            <button type="submit" class="btn-submit">Find out the result</button>
+        </form>
     </div>
+</div>
 
-    <h3>Ответ сервера (JSON):</h3>
-    <pre id="output" style="background:#f4f4f4; padding:10px; border:1px solid #ccc; min-height:50px;">
-        Выберите маршрут для теста...
-    </pre>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const select = document.getElementById('flightSelect');
+        try{
+            const response = await fetch('/api/flights');
+            const flights = await response.json();
 
-    <script>
-        const select = document.getElementById('route');
-        const output = document.getElementById('output');
-        const routeInfo = document.getElementById('route-info');
-
-        // 🔍 Получаем элементы для заполнения
-        const routeNameEl = document.getElementById('routename');
-        const departureTimeEl = document.getElementById('departuretime');
-        const arrivalTimeEl = document.getElementById('arrivaltime');
-
-        // 1️⃣ Загрузка списка маршрутов при открытии страницы
-        fetch('/api/routes')
-            .then(res => res.json())
-            .then(data => {
-                select.innerHTML = '<option value="">-- Выберите --</option>';
-                data.routes.forEach(r => {
-                    const opt = document.createElement('option');
-                    opt.value = r;
-                    opt.textContent = r;
-                    select.appendChild(opt);
-                });
-            })
-            .catch(err => output.textContent = '❌ Ошибка загрузки маршрутов: ' + err);
-
-        // 2️⃣ Запрос данных при выборе маршрута
-        select.addEventListener('change', async () => {
-            const route = select.value;
-
-            // Если ничего не выбрано — скрываем блок и очищаем вывод
-            if (!route) {
-                routeInfo.classList.remove('show');
-                output.textContent = 'Выберите маршрут для теста...';
-                return;
-            }
-
-            output.textContent = '⏳ Загрузка данных...';
-
-            try {
-                // 🔄 Загружаем детали маршрута и данные модели параллельно
-                const [detailsRes, chartRes] = await Promise.all([
-                    fetch(`/api/route-details?route=${encodeURIComponent(route)}`),
-                    fetch(`/api/chart-data?route=${encodeURIComponent(route)}`)
-                ]);
-
-                // 📍 Обрабатываем информацию о маршруте
-                if (detailsRes.ok) {
-                    const details = await detailsRes.json();
-
-                    // ✅ Заполняем поля (используем ваши ID: routename, departuretime, arrivaltime)
-                    routeNameEl.textContent = details.route_name || '—';
-                    departureTimeEl.textContent = details.departure_time || '—';
-                    arrivalTimeEl.textContent = details.arrival_time || '—';
-
-                    // Показываем блок
-                    routeInfo.classList.add('show');
-                }
-
-                // 📊 Обрабатываем данные модели
-                if (chartRes.ok) {
-                    const chartData = await chartRes.json();
-                    output.textContent = JSON.stringify(chartData, null, 2);
-                } else {
-                    throw new Error(`HTTP ${chartRes.status}`);
-                }
-
-            } catch (err) {
-                console.error('❌ Ошибка:', err);
-                output.textContent = '❌ Ошибка запроса: ' + err.message;
-                routeInfo.classList.remove('show');
-            }
-        });
-    </script>
+            select.innerHTML = '<option value="">Select flight</option>';
+            flights.forEach(flight => {
+                const option = document.createElement('option');
+                option.value = flight.flight_id;
+                option.textContent = `${flight.flight_id} | ${flight.origin} -> ${flight.destination}`;
+                select.appendChild(option);
+            });
+        }catch (error) {
+            console.error('Error loading flights:', error);
+            select.innerHTML = '<option value="">Error loading flights</option>';
+        }
+    });
+</script>
+<div class="blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+    <div class="blob blob-5"></div>
+    <div class="blob blob-6"></div>
+</div>
 </body>
 </html>
